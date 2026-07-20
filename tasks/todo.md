@@ -5,8 +5,8 @@
 - [x] Match the provided dashboard mockup structure and visual hierarchy.
 - [x] Support desktop, tablet, and mobile layouts without overlapping content.
 - [x] Make navigation, project creation, and date-range metrics interactive.
-- [ ] Verify local rendering at desktop and mobile viewport sizes.
-- [ ] Initialize Git, commit, create a GitHub repository, and push.
+- [x] Verify local rendering at desktop and mobile viewport sizes.
+- [x] Initialize Git, commit, create a GitHub repository, and push.
 
 ## Working notes
 
@@ -16,4 +16,6 @@
 
 ## Results
 
-- Pending browser and remote verification.
+- Playwright verified the dashboard at 1536x1024 and 390x844 with no overflow or overlapping content.
+- Mobile navigation, project dialog, success toast, and 7/30-day metric switching work as expected.
+- Published to `https://github.com/saroby/StatusScreen` on the `main` branch.
