@@ -1,0 +1,48 @@
+services:
+  backend:
+    build: .
+    command: ["node", "backend/server.mjs"]
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+      STATUSSCREEN_DB: /app/data/statusscreen.db
+    ports:
+      - "3000:3000"
+    volumes:
+      - statusscreen-data:/app/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)})"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 3s
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["node", "worker/worker.mjs"]
+    environment:
+      STATUSSCREEN_DB: /app/data/statusscreen.db
+    volumes:
+      - statusscreen-data:/app/data
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build: .
+    command: ["node", "scripts/frontend-server.mjs"]
+    environment:
+      FRONTEND_HOST: 0.0.0.0
+      FRONTEND_PORT: 8080
+      BACKEND_URL: http://backend:3000
+    ports:
+      - "8080:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  statusscreen-data:

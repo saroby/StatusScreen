@@ -194,6 +194,42 @@ test('startup recovers a stale claimed job and accounts for the abandoned attemp
   }
 });
 
+test('a running worker periodically recovers jobs abandoned after startup', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'statusscreen-periodic-recovery-'));
+  const dbPath = join(directory, 'statusscreen.db');
+  const observer = openDatabase({ path: dbPath });
+  let worker;
+  try {
+    worker = runWorker({
+      dbPath,
+      pollIntervalMs: 5,
+      staleAfterMs: 20,
+      logger: silentLogger,
+    });
+    await worker.ready;
+    const created = observer.createProject({
+      title: 'periodic stale recovery',
+      channelIds: ['instagram'],
+    });
+    const abandoned = observer.claimNextJob('worker-that-failed-later');
+    assert.equal(abandoned.id, created.job.id);
+    observer.db.prepare(`
+      UPDATE jobs SET heartbeat_at = '2000-01-01T00:00:00.000Z' WHERE id = ?
+    `).run(created.job.id);
+
+    const recovered = await waitFor(() => {
+      const job = observer.getJob(created.job.id);
+      return job.status === 'completed' ? job : null;
+    }, { timeoutMs: 2_500, message: 'periodic stale job recovery' });
+    assert.equal(recovered.attempts, 2);
+    assert.equal(observer.getProject(created.project.id).status, 'ready');
+  } finally {
+    await worker?.stop();
+    observer.close();
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test('graceful stop finishes an active job before marking the worker stopped', async () => {
   const directory = mkdtempSync(join(tmpdir(), 'statusscreen-graceful-'));
   const dbPath = join(directory, 'statusscreen.db');

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="YouTube Shorts, Instagram Reels, TikTok 통합 제작 대시보드">
+  <meta name="theme-color" content="#ffffff">
+  <title>Shortify Hub | 통합 제작 허브</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#app-view">본문으로 건너뛰기</a>
+  <header class="topbar">
+    <button class="icon-button menu-button" type="button" aria-label="메뉴 열기" aria-controls="sidebar" aria-expanded="false" data-menu-toggle>
+      <i data-lucide="menu"></i>
+    </button>
+    <a class="brand" href="#dashboard" aria-label="Shortify Hub 대시보드">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Shortify Hub</span>
+    </a>
+    <div class="top-actions">
+      <button class="icon-button notification-button" type="button" aria-label="알림" aria-controls="notifications-panel" aria-expanded="false" data-notifications-toggle>
+        <i data-lucide="bell"></i><span class="notification-badge" hidden data-notification-count>0</span>
+      </button>
+      <button class="button button-primary" type="button" data-open-project>
+        <i data-lucide="plus"></i><span>새 영상 만들기</span>
+      </button>
+      <a class="profile-link" href="#settings" aria-label="설정으로 이동">
+        <span class="avatar" aria-hidden="true">S</span><span class="profile-name" data-workspace-name>스마트비디오</span>
+      </a>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar" aria-label="사이드바">
+    <nav class="nav-list" aria-label="주 메뉴">
+      <a href="#dashboard" data-route="dashboard"><i data-lucide="house"></i><span>대시보드</span></a>
+      <a href="#content" data-route="content"><i data-lucide="play-square"></i><span>콘텐츠</span></a>
+      <a href="#hook-tests" data-route="hook-tests"><i data-lucide="flask-conical"></i><span>훅 테스트</span></a>
+      <a href="#calendar" data-route="calendar"><i data-lucide="calendar-days"></i><span>캘린더</span></a>
+      <a href="#analytics" data-route="analytics"><i data-lucide="chart-no-axes-column-increasing"></i><span>분석</span></a>
+      <a href="#channels" data-route="channels"><i data-lucide="radio-tower"></i><span>채널</span></a>
+      <a href="#templates" data-route="templates"><i data-lucide="layout-template"></i><span>템플릿</span></a>
+      <a href="#brand" data-route="brand"><i data-lucide="tag"></i><span>브랜드</span></a>
+      <a href="#settings" data-route="settings"><i data-lucide="settings"></i><span>설정</span></a>
+    </nav>
+    <section class="plan-summary" aria-labelledby="plan-summary-title">
+      <div class="plan-heading"><i data-lucide="crown"></i><strong id="plan-summary-title" data-plan-name>플랜</strong></div>
+      <p data-plan-description>플랜 정보를 불러오는 중입니다.</p>
+      <div class="usage-row"><progress max="100" value="0" data-plan-usage><span class="sr-only">사용량</span></progress><span data-plan-percent>0%</span></div>
+      <a class="button button-secondary button-full" href="#plan">플랜 관리</a>
+    </section>
+  </aside>
+  <button class="nav-scrim" type="button" aria-label="메뉴 닫기" data-menu-close></button>
+
+  <main class="main-content" id="app-view" tabindex="-1" aria-live="polite"></main>
+
+  <section class="notification-panel" id="notifications-panel" aria-label="알림" hidden data-notifications-panel>
+    <header class="panel-title-row"><h2>알림</h2><button class="icon-button" type="button" aria-label="알림 닫기" data-notifications-close><i data-lucide="x"></i></button></header>
+    <div data-notifications-content></div>
+  </section>
+
+  <dialog class="modal" data-project-dialog>
+    <form class="modal-form" data-project-form>
+      <header class="modal-header">
+        <div><p class="eyebrow">NEW PROJECT</p><h2>새 영상 만들기</h2></div>
+        <button class="icon-button" type="button" aria-label="닫기" data-project-close><i data-lucide="x"></i></button>
+      </header>
+      <label class="field"><span>프로젝트 제목</span><input name="title" type="text" required maxlength="160" autocomplete="off" placeholder="영상 제목을 입력하세요"></label>
+      <fieldset class="channel-fieldset"><legend>제작 채널</legend><div data-project-channels class="checkbox-list"></div></fieldset>
+      <div class="inline-error" role="alert" hidden data-project-error></div>
+      <footer class="modal-footer"><button class="button button-secondary" type="button" data-project-close>취소</button><button class="button button-primary" type="submit" data-project-submit><i data-lucide="sparkles"></i><span>프로젝트 만들기</span></button></footer>
+    </form>
+  </dialog>
+
+  <div class="job-status" role="status" aria-live="polite" hidden data-job-status></div>
+  <div class="toast-region" aria-live="polite" aria-atomic="true" data-toast-region></div>
+</body>
+</html>

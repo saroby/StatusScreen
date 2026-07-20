@@ -1,0 +1,9 @@
+.git
+.gitignore
+data
+node_modules
+test-results
+tasks
+tests
+*.log
+*.sqlite*

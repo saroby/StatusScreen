@@ -83,6 +83,11 @@ test('health, CORS, request IDs, seed dashboard, analytics, and JSON-only 404s',
   assert.equal(analytics.body.analytics.likes, 863_000);
   assert.equal(analytics.body.analytics.averageViewRate, 109);
   assert.equal(analytics.body.analytics.newFollowers, 128_000);
+  assert.deepEqual(
+    analytics.body.analytics.channels.map((channel) => channel.id),
+    ['youtube', 'instagram', 'tiktok'],
+  );
+  assert.ok(analytics.body.analytics.channels.every((channel) => channel.views > 0));
 
   const badRange = await fixture.json('/api/dashboard?range=14');
   assert.equal(badRange.response.status, 422);

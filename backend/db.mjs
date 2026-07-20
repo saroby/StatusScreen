@@ -822,6 +822,14 @@ export class StatusScreenStore {
         averageViewRate: row.rate_change,
         newFollowers: row.follower_change,
       },
+      channels: this.listChannels().map((channel) => {
+        const metrics = channel.metrics[range] ?? {};
+        return {
+          id: channel.id,
+          name: channel.name,
+          views: metrics.views ?? metrics.reach ?? metrics.likes ?? 0,
+        };
+      }),
       updatedAt: row.updated_at,
     };
   }

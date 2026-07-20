@@ -104,6 +104,7 @@ export function runWorker(options = {}) {
   const startedAt = new Date().toISOString();
   let stopping = false;
   let wake = null;
+  let lastRecoveryAt = 0;
   let resolveReady;
   let rejectReady;
   const ready = new Promise((resolve, reject) => {
@@ -120,6 +121,10 @@ export function runWorker(options = {}) {
 
       while (!stopping) {
         store.updateWorkerHeartbeat({ workerId, status: 'running', startedAt });
+        if (Date.now() - lastRecoveryAt >= Math.max(1_000, staleAfterMs / 2)) {
+          store.recoverStaleJobs({ staleAfterMs });
+          lastRecoveryAt = Date.now();
+        }
         const job = store.claimNextJob(workerId);
         if (!job) {
           await makeInterruptibleDelay(pollIntervalMs, (nextWake) => {
